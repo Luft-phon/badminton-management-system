@@ -1,0 +1,6 @@
+@BadmintonCourtManagement_HostAddress = http://localhost:5106
+
+GET {{BadmintonCourtManagement_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
