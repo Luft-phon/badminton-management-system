@@ -3,11 +3,11 @@ using BadmintonCourtManagement.Domain.Enum;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace BadmintonCourtManagement.Data
+namespace BadmintonCourtManagement.Infrastructure.Data
 {
     public class ApplicationDbContext : DbContext
     {
-        public ApplicationDbContext(DbContextOptions options) : base(options)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
         }
 
@@ -17,10 +17,10 @@ namespace BadmintonCourtManagement.Data
         public DbSet<Report> Reports { get; set; }
         public DbSet<Payment> Payments { get; set; }
         public DbSet<Points> Points { get; set; }
-
+        public DbSet<Account> Account { get; set; }
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<Feedback> Feedback { get; set; }
-
+        public DbSet<CourtBooking> CourtBookings { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // many to many
@@ -74,6 +74,13 @@ namespace BadmintonCourtManagement.Data
        .Property(u => u.Role)
        .HasConversion(roleConverter);
 
+            var courtNameConverter = new ValueConverter<CourtName, string>(
+       v => v.ToString(), // enum => string
+       v => (CourtName)Enum.Parse(typeof(CourtName), v) // string => enum
+   );
+            modelBuilder.Entity<Court>()
+       .Property(u => u.CourtName)
+       .HasConversion(courtNameConverter);
 
             var paymentStatusConverter = new ValueConverter<PaymentStatus, string>(
       v => v.ToString(),

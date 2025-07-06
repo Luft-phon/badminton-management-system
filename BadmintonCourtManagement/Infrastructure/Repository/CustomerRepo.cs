@@ -72,7 +72,7 @@ namespace BadmintonCourtManagement.Infrastructure.Repository
 FROM [User] u
 LEFT JOIN Bookings b ON u.UserID = b.UserID
 LEFT JOIN Payments p ON b.BookingID = p.BookingID
-LEFT JOIN CourtBooking cb ON cb.BookingId = b.BookingID
+LEFT JOIN CourtBookings cb ON cb.BookingId = b.BookingID
 LEFT JOIN Courts c ON c.CourtID = cb.CourtId
 WHERE u.[Role] = 'Member'
 GROUP BY u.FirstName + ' ' + u.LastName, u.Phone, u.UserID";

@@ -2,8 +2,8 @@
 using BadmintonCourtManagement.Application.DTO.Response;
 using BadmintonCourtManagement.Application.DTO.Response.CustomerResponseDTO;
 using BadmintonCourtManagement.Application.Service;
-using BadmintonCourtManagement.Data;
 using BadmintonCourtManagement.Domain.Entity;
+using BadmintonCourtManagement.Infrastructure.Data;
 using BadmintonCourtManagement.Infrastructure.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,7 +15,6 @@ namespace BadmintonCourtManagement.Controllers.CustomerController
     [ApiController]
     public class CustomerController : ControllerBase
     {
-
         private CustomerService _customerService;
         public CustomerController(CustomerService customerService)
         {
@@ -28,6 +27,7 @@ namespace BadmintonCourtManagement.Controllers.CustomerController
             try
             {
                 var customer = await _customerService.GetAllCustomers(request.PageNumber, request.PageSize);
+
                 if (customer == null)
                 {
                     return BadRequest(ErrorResponse.NotFound());
@@ -41,7 +41,7 @@ namespace BadmintonCourtManagement.Controllers.CustomerController
         }
 
         [HttpGet]
-        [Route("api/[controller]/{id}")]
+        [Route("{id}")]
         public async Task<IActionResult> GetCustomerByID(int id)
         {
             try
@@ -60,7 +60,7 @@ namespace BadmintonCourtManagement.Controllers.CustomerController
         }
 
         [HttpPost]
-        [Route("api/[controller]/update")]
+        [Route("update")]
         public async Task<IActionResult> UpdateCustomer([FromBody] UpdateCustomerRequestDTO dto)
         {
             try

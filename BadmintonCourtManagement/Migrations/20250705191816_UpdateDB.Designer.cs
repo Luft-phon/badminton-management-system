@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BadmintonCourtManagement.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250629031412_UpdateBookingEntity")]
-    partial class UpdateBookingEntity
+    [Migration("20250705191816_UpdateDB")]
+    partial class UpdateDB
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -50,17 +50,21 @@ namespace BadmintonCourtManagement.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BookingID"));
 
+                    b.Property<DateTime>("BookingDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime>("EndTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("ReportID")
+                    b.Property<int>("ReportID")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("TotalHourBooked")
                         .HasColumnType("float");
@@ -111,7 +115,7 @@ namespace BadmintonCourtManagement.Migrations
 
                     b.HasIndex("CourtId");
 
-                    b.ToTable("CourtBooking");
+                    b.ToTable("CourtBookings");
                 });
 
             modelBuilder.Entity("BadmintonCourtManagement.Domain.Entity.Feedback", b =>
@@ -170,14 +174,16 @@ namespace BadmintonCourtManagement.Migrations
                     b.Property<double>("Amount")
                         .HasColumnType("float");
 
-                    b.Property<int>("Method")
-                        .HasColumnType("int");
+                    b.Property<string>("Method")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("PaidAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("BookingID");
 
@@ -250,15 +256,16 @@ namespace BadmintonCourtManagement.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int?>("NotificationID")
+                    b.Property<int>("NotificationID")
                         .HasColumnType("int");
 
                     b.Property<string>("Phone")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Role")
-                        .HasColumnType("int");
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("UserID");
 
@@ -280,15 +287,19 @@ namespace BadmintonCourtManagement.Migrations
 
             modelBuilder.Entity("BadmintonCourtManagement.Domain.Entity.Booking", b =>
                 {
-                    b.HasOne("BadmintonCourtManagement.Domain.Entity.Report", null)
+                    b.HasOne("BadmintonCourtManagement.Domain.Entity.Report", "Report")
                         .WithMany("Bookings")
-                        .HasForeignKey("ReportID");
+                        .HasForeignKey("ReportID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("BadmintonCourtManagement.Domain.Entity.User", "User")
                         .WithMany("Bookings")
                         .HasForeignKey("UserID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Report");
 
                     b.Navigation("User");
                 });
@@ -347,9 +358,13 @@ namespace BadmintonCourtManagement.Migrations
 
             modelBuilder.Entity("BadmintonCourtManagement.Domain.Entity.User", b =>
                 {
-                    b.HasOne("BadmintonCourtManagement.Domain.Entity.Notification", null)
+                    b.HasOne("BadmintonCourtManagement.Domain.Entity.Notification", "Notification")
                         .WithMany("Users")
-                        .HasForeignKey("NotificationID");
+                        .HasForeignKey("NotificationID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Notification");
                 });
 
             modelBuilder.Entity("BadmintonCourtManagement.Domain.Entity.Booking", b =>
