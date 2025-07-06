@@ -56,7 +56,7 @@ namespace BadmintonCourtManagement.Application.UseCase
                     return new CreateBookingResponseDTO
                     {
                         Status = 400,
-                        Messege = "Please select an appropriate time"
+                        Messege = "Please select an available time"
                     };
                 }
                 else

@@ -56,7 +56,10 @@ namespace BadmintonCourtManagement.Application.Utils
 
             bool isConfict = await _context.CourtBookings
                 .Where(c => courtIds.Contains(c.CourtId))
-                .AnyAsync(cd => cd.Booking.StartTime < endTime && cd.Booking.EndTime > startTime);
+                .AnyAsync(cd => cd.Booking.StartTime < endTime 
+                    && cd.Booking.EndTime > startTime 
+                    && cd.Booking.Status == BookingStatus.Booked);
+   
             if (isConfict)
             {
                 return true;
