@@ -13,7 +13,11 @@ namespace BadmintonCourtManagement.Domain.Entity
         public BookingStatus Status { get; set; }
 
         // 1 to many: user booking
+        public int UserID { get; set; }
         public User User { get; set; }
+        // 1 to many: booking report
+        public int? ReportID { get; set; }
+        public Report Report { get; set; }
 
         // many to many: booking court
         public ICollection<CourtBooking> courtBookings { get; set; } = new List<CourtBooking>();

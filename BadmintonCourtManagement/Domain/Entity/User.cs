@@ -39,5 +39,8 @@ namespace BadmintonCourtManagement.Domain.Entity
         // 1 to 1: user point
         public Points Points { get; set; }
 
+        // 1 to many: Noti
+        public int NotificationID { get; set; }
+        public Notification Notification { get; set; }
     }
 }
