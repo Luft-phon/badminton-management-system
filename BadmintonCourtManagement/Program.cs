@@ -1,6 +1,8 @@
-﻿using BadmintonCourtManagement.Application.Service;
+﻿using BadmintonCourtManagement.Application.Interface;
+using BadmintonCourtManagement.Application.Service;
 using BadmintonCourtManagement.Application.UseCase;
 using BadmintonCourtManagement.Application.Utils;
+using BadmintonCourtManagement.Domain.Interface;
 using BadmintonCourtManagement.Infrastructure.Data;
 using BadmintonCourtManagement.Infrastructure.Repository;
 using BadmintonCourtManagement.Infrastructure.Testing;
@@ -14,14 +16,17 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddScoped<CustomerService>();
+builder.Services.AddScoped<ICustomerService, CustomerService>();
 //builder.Services.AddScoped<ApplicationDbContext>();
 builder.Services.AddScoped<CustomerUseCase>();
-builder.Services.AddScoped<CustomerRepo>();
-builder.Services.AddScoped<UnitOfWork>();
-builder.Services.AddScoped<BookingService>();
+builder.Services.AddScoped<ICustomerRepo, CustomerRepo>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IBookingService, BookingService>();
 builder.Services.AddScoped<BookingUseCase>();
 builder.Services.AddScoped<BookingValidation>();
+builder.Services.AddScoped<ICourtService, CourtService>();
+builder.Services.AddScoped<CourtUseCase>();
+builder.Services.AddScoped<ICourtRepo, CourtRepo>();
 
 
 

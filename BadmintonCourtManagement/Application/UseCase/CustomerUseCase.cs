@@ -1,6 +1,7 @@
 ﻿using BadmintonCourtManagement.Application.DTO.Request;
 using BadmintonCourtManagement.Application.DTO.Response.CustomerResponseDTO;
 using BadmintonCourtManagement.Domain.Entity;
+using BadmintonCourtManagement.Domain.Interface;
 using BadmintonCourtManagement.Infrastructure.Data;
 using BadmintonCourtManagement.Infrastructure.Repository;
 using Microsoft.Data.SqlClient;
@@ -11,10 +12,10 @@ namespace BadmintonCourtManagement.Application.UseCase
     public class CustomerUseCase
     {
         private readonly ApplicationDbContext _context;
-        private readonly CustomerRepo _customerRepo;
-        private readonly UnitOfWork _unitOfWork;
+        private readonly ICustomerRepo _customerRepo;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public CustomerUseCase(ApplicationDbContext context, CustomerRepo customerRepo, UnitOfWork unitOfWork)
+        public CustomerUseCase(ApplicationDbContext context, ICustomerRepo customerRepo, IUnitOfWork unitOfWork)
         {
             _context = context;
             _customerRepo = customerRepo;

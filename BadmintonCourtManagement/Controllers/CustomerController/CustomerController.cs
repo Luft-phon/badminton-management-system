@@ -1,6 +1,7 @@
 ﻿using BadmintonCourtManagement.Application.DTO.Request;
 using BadmintonCourtManagement.Application.DTO.Response;
 using BadmintonCourtManagement.Application.DTO.Response.CustomerResponseDTO;
+using BadmintonCourtManagement.Application.Interface;
 using BadmintonCourtManagement.Application.Service;
 using BadmintonCourtManagement.Domain.Entity;
 using BadmintonCourtManagement.Infrastructure.Data;
@@ -15,13 +16,14 @@ namespace BadmintonCourtManagement.Controllers.CustomerController
     [ApiController]
     public class CustomerController : ControllerBase
     {
-        private CustomerService _customerService;
-        public CustomerController(CustomerService customerService)
+        private ICustomerService _customerService;
+        public CustomerController(ICustomerService customerService)
         {
             _customerService = customerService;
         }
 
         [HttpPost]
+        [Route("getCustomers")]
         public async Task<IActionResult> GetAllCustomers([FromBody] PagingRequest request)
         {
             try
@@ -59,8 +61,8 @@ namespace BadmintonCourtManagement.Controllers.CustomerController
             }
         }
 
-        [HttpPost]
-        [Route("update")]
+        [HttpPut]
+        [Route("update-customer")]
         public async Task<IActionResult> UpdateCustomer([FromBody] UpdateCustomerRequestDTO dto)
         {
             try

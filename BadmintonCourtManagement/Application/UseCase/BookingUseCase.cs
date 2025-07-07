@@ -3,6 +3,7 @@ using BadmintonCourtManagement.Application.DTO.Response.BookingResponseDTO;
 using BadmintonCourtManagement.Application.Utils;
 using BadmintonCourtManagement.Domain.Entity;
 using BadmintonCourtManagement.Domain.Enum;
+using BadmintonCourtManagement.Domain.Interface;
 using BadmintonCourtManagement.Infrastructure.Data;
 using BadmintonCourtManagement.Infrastructure.Repository;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -13,10 +14,10 @@ namespace BadmintonCourtManagement.Application.UseCase
     public class BookingUseCase
     {
         private readonly ApplicationDbContext _context;
-        private readonly UnitOfWork _unitOfWork;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly BookingValidation _bookingValidation;
 
-        public BookingUseCase(ApplicationDbContext context, UnitOfWork unitOfWork, BookingValidation bookingValidation)
+        public BookingUseCase(ApplicationDbContext context, IUnitOfWork unitOfWork, BookingValidation bookingValidation)
         {
             _context = context;
             _unitOfWork = unitOfWork;

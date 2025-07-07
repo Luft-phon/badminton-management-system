@@ -8,7 +8,6 @@ namespace BadmintonCourtManagement.Domain.Entity
         public CourtName CourtName { get; set; }
         public CourtStatus CourtStatus { get; set; }
         public double Price { get; set; }
-
         public ICollection<CourtBooking> courtBookings { get; set; } = new List<CourtBooking>();
     }
 }
