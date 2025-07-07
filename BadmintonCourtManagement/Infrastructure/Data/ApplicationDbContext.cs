@@ -82,6 +82,14 @@ namespace BadmintonCourtManagement.Infrastructure.Data
        .Property(u => u.CourtName)
        .HasConversion(courtNameConverter);
 
+            var courtStatusConverter = new ValueConverter<CourtStatus, string>(
+       v => v.ToString(), // enum => string
+       v => (CourtStatus)Enum.Parse(typeof(CourtStatus), v) // string => enum
+   );
+            modelBuilder.Entity<Court>()
+       .Property(u => u.CourtStatus)
+       .HasConversion(courtStatusConverter);
+
             var paymentStatusConverter = new ValueConverter<PaymentStatus, string>(
       v => v.ToString(),
       v => (PaymentStatus)Enum.Parse(typeof(PaymentStatus), v)

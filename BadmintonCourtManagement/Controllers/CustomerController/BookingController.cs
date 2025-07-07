@@ -1,6 +1,7 @@
 ﻿using BadmintonCourtManagement.Application.DTO.Request;
 using BadmintonCourtManagement.Application.DTO.Response;
 using BadmintonCourtManagement.Application.DTO.Response.BookingResponseDTO;
+using BadmintonCourtManagement.Application.Interface;
 using BadmintonCourtManagement.Application.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -12,8 +13,8 @@ namespace BadmintonCourtManagement.Controllers.CustomerController
     public class BookingController : ControllerBase
     {
 
-        private readonly BookingService _service;
-        public BookingController(BookingService service)
+        private readonly IBookingService _service;
+        public BookingController(IBookingService service)
         {
             _service = service;
         }
