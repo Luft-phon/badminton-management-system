@@ -1,7 +1,8 @@
-﻿using BadmintonCourtManagement.Application.DTO.Request;
+﻿using BadmintonCourtManagement.Application.DTO.Request.CourtRequest;
 using BadmintonCourtManagement.Application.DTO.Response;
 using BadmintonCourtManagement.Application.DTO.Response.CourtResponseDTO;
 using BadmintonCourtManagement.Application.Interface;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,6 +18,7 @@ namespace BadmintonCourtManagement.Controllers.CourtController
             this.courtService = courtService;
         }
 
+        [Authorize(Roles = "Staff, Owner")]
         [HttpGet]
         [Route("getCourts")]
         public async Task<IActionResult> GetCourts()
@@ -32,6 +34,7 @@ namespace BadmintonCourtManagement.Controllers.CourtController
             }
         }
 
+        [Authorize(Roles = "Staff, Owner")]
         [HttpPut]
         [Route("update-court")]
         public async Task<IActionResult> UpdateCourt(UpdateCourtStatusRequestDTO dto)

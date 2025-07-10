@@ -12,6 +12,7 @@ This website is a modern landing page for a badminton court booking system. It a
 ## ⭐ Technology
 - ASP.NET Web Api
 - Microsoft SQL Server
+- JWT Authentication
 
 ## 📌 Prerequisite
 - VS Studio 2022

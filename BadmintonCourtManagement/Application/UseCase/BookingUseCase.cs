@@ -1,4 +1,4 @@
-﻿using BadmintonCourtManagement.Application.DTO.Request;
+﻿using BadmintonCourtManagement.Application.DTO.Request.BookingRequest;
 using BadmintonCourtManagement.Application.DTO.Response.BookingResponseDTO;
 using BadmintonCourtManagement.Application.Utils;
 using BadmintonCourtManagement.Domain.Entity;

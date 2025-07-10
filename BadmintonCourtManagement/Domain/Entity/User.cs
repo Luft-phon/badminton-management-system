@@ -1,4 +1,5 @@
 ﻿using BadmintonCourtManagement.Domain.Enum;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 
 namespace BadmintonCourtManagement.Domain.Entity
@@ -15,16 +16,11 @@ namespace BadmintonCourtManagement.Domain.Entity
         [StringLength(50)]
         public string LastName { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Email is required.")]
-        [EmailAddress(ErrorMessage = "Invalid email format.")]
-        public string Email { get; set; } = string.Empty;
-
         [Required(ErrorMessage = "Role is required.")]
         public Role Role { get; set; }
 
-        [Required(ErrorMessage = "Date of birth is required.")]
         [DataType(DataType.Date)]
-        public DateTime Dob { get; set; }
+        public DateOnly? Dob { get; set; }
 
         [Required(ErrorMessage = "Phone number is required.")]
         [Phone(ErrorMessage = "Invalid phone number.")]
@@ -40,7 +36,9 @@ namespace BadmintonCourtManagement.Domain.Entity
         public Points Points { get; set; }
 
         // 1 to many: Noti
-        public int NotificationID { get; set; }
+        public int? NotificationID { get; set; }
         public Notification Notification { get; set; }
+
+
     }
 }

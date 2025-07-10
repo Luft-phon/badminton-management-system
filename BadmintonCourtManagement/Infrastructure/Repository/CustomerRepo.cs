@@ -1,17 +1,22 @@
 ﻿using BadmintonCourtManagement.Application.DTO.Response.CustomerResponseDTO;
+using BadmintonCourtManagement.Domain.Entity;
 using BadmintonCourtManagement.Domain.Interface;
+using BadmintonCourtManagement.Infrastructure.Data;
 using Dapper;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 
 namespace BadmintonCourtManagement.Infrastructure.Repository
 {
     public class CustomerRepo : ICustomerRepo
     {
         private readonly string _connectionString;
+        private readonly ApplicationDbContext _context;
 
-        public CustomerRepo(IConfiguration configuration)
+        public CustomerRepo(IConfiguration configuration, ApplicationDbContext context)
         {
             _connectionString = configuration.GetConnectionString("DefaultConnection");
+            _context = context;
         }
 
         // Đang dùng ADO.NET => dài dòng
@@ -83,12 +88,14 @@ GROUP BY u.FirstName + ' ' + u.LastName, u.Phone, u.UserID";
         public async Task<GetCustomerByIdDTO> GetCustomerById(int id)
         {
             using var con = new SqlConnection(_connectionString);
-            string sqlQuery = @"Select u.FirstName, u.LastName, CAST(u.Dob as DATE), u.Email, u.Phone, COUNT(b.BookingID) as [TotalBooking], p.Point as [Exp]
+            string sqlQuery = @"Select u.FirstName, u.LastName,  CONVERT(VARCHAR(10), u.Dob, 101) as Dob, a.Email, u.Phone, COUNT(b.BookingID) as [TotalBooking], p.Point as [Exp]
         FROM [User] u
-        JOIN Bookings b ON u.UserID = b.UserID
-        JOIN Points p ON u.UserID = p.UserID
+        LEFT JOIN Bookings b ON u.UserID = b.UserID
+        LEFT JOIN Points p ON u.UserID = p.UserID
+		LEFT JOIN Account a ON a.UserID = u.UserID
         WHERE u.UserID = @UserId
-        GROUP BY u.FirstName, u.LastName, u.Dob, u.Email, u.Phone, p.Point";
+        GROUP BY u.FirstName, u.LastName, u.Dob, a.Email, u.Phone, p.Point
+		";
 
             var result = await con.QueryFirstOrDefaultAsync<GetCustomerByIdDTO>(sqlQuery, new { UserId = id });
             return result;
@@ -100,7 +107,7 @@ GROUP BY u.FirstName + ' ' + u.LastName, u.Phone, u.UserID";
             string sqlQuery = @"Select CAST(b.BookingDate AS DATE) as BookedDate, b.StartTime, b.EndTime, c.CourtName
 FROM [User] u
 JOIN Bookings b ON u.UserID = b.UserID
-JOIN CourtBooking cb ON cb.BookingId = b.BookingID
+JOIN CourtBookings cb ON cb.BookingId = b.BookingID
 JOIN Courts c ON c.CourtID = cb.CourtId
 WHERE u.UserID = @UserId
 GROUP BY b.BookingDate, b.StartTime, b.EndTime, c.CourtName";

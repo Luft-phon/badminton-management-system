@@ -4,6 +4,7 @@ using BadmintonCourtManagement.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BadmintonCourtManagement.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250710160957_AddTokenEntity")]
+    partial class AddTokenEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -253,7 +256,7 @@ namespace BadmintonCourtManagement.Migrations
 
                     b.HasKey("UserID");
 
-                    b.ToTable("Tokens");
+                    b.ToTable("Token");
                 });
 
             modelBuilder.Entity("BadmintonCourtManagement.Domain.Entity.User", b =>
@@ -265,6 +268,7 @@ namespace BadmintonCourtManagement.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserID"));
 
                     b.Property<DateOnly?>("Dob")
+                        .IsRequired()
                         .HasColumnType("date");
 
                     b.Property<string>("FirstName")
@@ -377,13 +381,13 @@ namespace BadmintonCourtManagement.Migrations
 
             modelBuilder.Entity("BadmintonCourtManagement.Domain.Entity.Token", b =>
                 {
-                    b.HasOne("BadmintonCourtManagement.Domain.Entity.Account", "Account")
+                    b.HasOne("BadmintonCourtManagement.Domain.Entity.User", "User")
                         .WithOne("Token")
                         .HasForeignKey("BadmintonCourtManagement.Domain.Entity.Token", "UserID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Account");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("BadmintonCourtManagement.Domain.Entity.User", b =>
@@ -393,12 +397,6 @@ namespace BadmintonCourtManagement.Migrations
                         .HasForeignKey("NotificationID");
 
                     b.Navigation("Notification");
-                });
-
-            modelBuilder.Entity("BadmintonCourtManagement.Domain.Entity.Account", b =>
-                {
-                    b.Navigation("Token")
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("BadmintonCourtManagement.Domain.Entity.Booking", b =>
@@ -434,6 +432,9 @@ namespace BadmintonCourtManagement.Migrations
                     b.Navigation("Feedbacks");
 
                     b.Navigation("Points")
+                        .IsRequired();
+
+                    b.Navigation("Token")
                         .IsRequired();
                 });
 #pragma warning restore 612, 618

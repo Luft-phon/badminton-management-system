@@ -21,6 +21,7 @@ namespace BadmintonCourtManagement.Infrastructure.Data
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<Feedback> Feedback { get; set; }
         public DbSet<CourtBooking> CourtBookings { get; set; }
+        public DbSet<Token> Tokens { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // many to many
@@ -46,6 +47,15 @@ namespace BadmintonCourtManagement.Infrastructure.Data
                 .HasOne(b => b.Payment)
                 .WithOne(p => p.Booking)
                 .HasForeignKey<Payment>(p => p.BookingID); // Shared key
+
+            // one to one
+            modelBuilder.Entity<Token>()
+               .HasKey(t => t.UserID); 
+
+            modelBuilder.Entity<Account>()
+                .HasOne(c => c.Token)
+                .WithOne(p => p.Account)
+                .HasForeignKey<Token>(p => p.UserID); 
 
             // one to one
             modelBuilder.Entity<Account>()

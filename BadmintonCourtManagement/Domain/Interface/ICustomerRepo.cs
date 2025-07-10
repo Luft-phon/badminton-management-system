@@ -1,4 +1,5 @@
 ﻿using BadmintonCourtManagement.Application.DTO.Response.CustomerResponseDTO;
+using BadmintonCourtManagement.Domain.Entity;
 
 namespace BadmintonCourtManagement.Domain.Interface
 {

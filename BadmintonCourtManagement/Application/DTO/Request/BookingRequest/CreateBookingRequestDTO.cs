@@ -1,6 +1,6 @@
 ﻿using BadmintonCourtManagement.Domain.Entity;
 
-namespace BadmintonCourtManagement.Application.DTO.Request
+namespace BadmintonCourtManagement.Application.DTO.Request.BookingRequest
 {
     public class CreateBookingRequestDTO
     {

@@ -1,8 +1,9 @@
-﻿using BadmintonCourtManagement.Application.DTO.Request;
+﻿using BadmintonCourtManagement.Application.DTO.Request.BookingRequest;
 using BadmintonCourtManagement.Application.DTO.Response;
 using BadmintonCourtManagement.Application.DTO.Response.BookingResponseDTO;
 using BadmintonCourtManagement.Application.Interface;
 using BadmintonCourtManagement.Application.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,6 +20,7 @@ namespace BadmintonCourtManagement.Controllers.CustomerController
             _service = service;
         }
 
+        [Authorize]
         [HttpPost]
         [Route("createBooking")]
         public async Task<IActionResult> CreateBooking([FromBody] CreateBookingRequestDTO dto)

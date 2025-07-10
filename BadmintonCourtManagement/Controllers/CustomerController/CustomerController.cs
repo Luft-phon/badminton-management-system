@@ -1,4 +1,5 @@
 ﻿using BadmintonCourtManagement.Application.DTO.Request;
+using BadmintonCourtManagement.Application.DTO.Request.UserRequest;
 using BadmintonCourtManagement.Application.DTO.Response;
 using BadmintonCourtManagement.Application.DTO.Response.CustomerResponseDTO;
 using BadmintonCourtManagement.Application.Interface;
@@ -6,6 +7,7 @@ using BadmintonCourtManagement.Application.Service;
 using BadmintonCourtManagement.Domain.Entity;
 using BadmintonCourtManagement.Infrastructure.Data;
 using BadmintonCourtManagement.Infrastructure.Repository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -22,6 +24,7 @@ namespace BadmintonCourtManagement.Controllers.CustomerController
             _customerService = customerService;
         }
 
+        [Authorize(Roles = "Staff, Owner")]
         [HttpPost]
         [Route("getCustomers")]
         public async Task<IActionResult> GetAllCustomers([FromBody] PagingRequest request)
@@ -42,6 +45,7 @@ namespace BadmintonCourtManagement.Controllers.CustomerController
             }
         }
 
+        [Authorize(Roles = "Staff, Owner")]
         [HttpGet]
         [Route("{id}")]
         public async Task<IActionResult> GetCustomerByID(int id)
@@ -61,6 +65,7 @@ namespace BadmintonCourtManagement.Controllers.CustomerController
             }
         }
 
+        [Authorize(Roles = "Staff, Owner")]
         [HttpPut]
         [Route("update-customer")]
         public async Task<IActionResult> UpdateCustomer([FromBody] UpdateCustomerRequestDTO dto)
@@ -80,6 +85,6 @@ namespace BadmintonCourtManagement.Controllers.CustomerController
             }
         }
 
-
+        
     }
 }

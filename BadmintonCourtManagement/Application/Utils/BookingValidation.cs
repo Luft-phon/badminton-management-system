@@ -1,4 +1,4 @@
-﻿using BadmintonCourtManagement.Application.DTO.Request;
+﻿using BadmintonCourtManagement.Application.DTO.Request.BookingRequest;
 using BadmintonCourtManagement.Domain.Enum;
 using BadmintonCourtManagement.Infrastructure.Data;
 using BadmintonCourtManagement.Infrastructure.Repository;

@@ -4,6 +4,7 @@ using BadmintonCourtManagement.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BadmintonCourtManagement.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250710035421_NullableDobUser")]
+    partial class NullableDobUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,17 +33,11 @@ namespace BadmintonCourtManagement.Migrations
                     b.Property<DateTime>("CreateAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("UserID");
-
-                    b.HasIndex("Email");
 
                     b.ToTable("Account");
                 });
@@ -236,26 +233,6 @@ namespace BadmintonCourtManagement.Migrations
                     b.ToTable("Reports");
                 });
 
-            modelBuilder.Entity("BadmintonCourtManagement.Domain.Entity.Token", b =>
-                {
-                    b.Property<int>("UserID")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("ExpiresAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("RefreshToken")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("RevokedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("UserID");
-
-                    b.ToTable("Tokens");
-                });
-
             modelBuilder.Entity("BadmintonCourtManagement.Domain.Entity.User", b =>
                 {
                     b.Property<int>("UserID")
@@ -264,8 +241,13 @@ namespace BadmintonCourtManagement.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserID"));
 
-                    b.Property<DateOnly?>("Dob")
-                        .HasColumnType("date");
+                    b.Property<DateTime?>("Dob")
+                        .IsRequired()
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -289,6 +271,9 @@ namespace BadmintonCourtManagement.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("UserID");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
 
                     b.HasIndex("NotificationID");
 
@@ -375,17 +360,6 @@ namespace BadmintonCourtManagement.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("BadmintonCourtManagement.Domain.Entity.Token", b =>
-                {
-                    b.HasOne("BadmintonCourtManagement.Domain.Entity.Account", "Account")
-                        .WithOne("Token")
-                        .HasForeignKey("BadmintonCourtManagement.Domain.Entity.Token", "UserID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Account");
-                });
-
             modelBuilder.Entity("BadmintonCourtManagement.Domain.Entity.User", b =>
                 {
                     b.HasOne("BadmintonCourtManagement.Domain.Entity.Notification", "Notification")
@@ -393,12 +367,6 @@ namespace BadmintonCourtManagement.Migrations
                         .HasForeignKey("NotificationID");
 
                     b.Navigation("Notification");
-                });
-
-            modelBuilder.Entity("BadmintonCourtManagement.Domain.Entity.Account", b =>
-                {
-                    b.Navigation("Token")
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("BadmintonCourtManagement.Domain.Entity.Booking", b =>

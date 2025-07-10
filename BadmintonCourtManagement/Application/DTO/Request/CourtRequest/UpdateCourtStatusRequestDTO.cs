@@ -1,4 +1,4 @@
-﻿namespace BadmintonCourtManagement.Application.DTO.Request
+﻿namespace BadmintonCourtManagement.Application.DTO.Request.CourtRequest
 {
     public class UpdateCourtStatusRequestDTO
     {

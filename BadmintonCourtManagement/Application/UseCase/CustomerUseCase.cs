@@ -1,10 +1,12 @@
-﻿using BadmintonCourtManagement.Application.DTO.Request;
+﻿using BadmintonCourtManagement.Application.DTO.Request.UserRequest;
 using BadmintonCourtManagement.Application.DTO.Response.CustomerResponseDTO;
 using BadmintonCourtManagement.Domain.Entity;
 using BadmintonCourtManagement.Domain.Interface;
 using BadmintonCourtManagement.Infrastructure.Data;
 using BadmintonCourtManagement.Infrastructure.Repository;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using System.Numerics;
 
 namespace BadmintonCourtManagement.Application.UseCase
@@ -48,8 +50,8 @@ namespace BadmintonCourtManagement.Application.UseCase
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Dob = user.Dob,
-                Email = user.Email,
                 Phone = user.Phone,
+                Email = user.Email,
                 TotalBooking = user.TotalBooking,
                 Exp = user.Exp,
                 bookingHistory = bookingsHistory.Select(b => new BookingHistoryResponseDTO
@@ -60,6 +62,7 @@ namespace BadmintonCourtManagement.Application.UseCase
                     CourtName = b.CourtName,
                     Status = b.Status
                 }).ToList()
+                
             };
             return dto;
         }
@@ -74,12 +77,17 @@ namespace BadmintonCourtManagement.Application.UseCase
                 {
                     return null;
                 }
-
+                var account = await _context.Account.FirstOrDefaultAsync(a => a.UserID == dto.UserID);
+                if (account == null)
+                {
+                    return null;
+                }
                 user.FirstName = dto.FirstName;
                 user.LastName = dto.LastName;
                 user.Dob = dto.Dob;
-                user.Email = dto.Email;
                 user.Phone = dto.Phone;
+                account.Email = dto.Email;
+                _context.Update(account);
                 _context.Update(user);
                 await _context.SaveChangesAsync();
                 await _unitOfWork.CommitAsync();
@@ -90,6 +98,44 @@ namespace BadmintonCourtManagement.Application.UseCase
                 throw new Exception("Error updating customer", ex);
             }
            
+        }
+
+        public async Task<UserRegistrationRequestDTO> RegisterCustomer(UserRegistrationRequestDTO dto)
+        {
+            await _unitOfWork.BeginTransactionAsync();
+            try
+            {
+                var accounts = await _context.Account.AnyAsync(u => u.Email == dto.Email);
+                if (accounts == true)
+                {
+                    return null;
+                }
+                var user = new User();
+                user.FirstName = dto.FirstName;
+                user.LastName = dto.LastName;   
+                user.Phone = dto.Phone;
+                user.Role = Domain.Enum.Role.Member;
+                user.NotificationID = 1;
+                 _context.User.Add(user);
+
+                var account = new Account();
+                account.User = user;
+                account.CreateAt = DateTime.UtcNow;
+                account.Email = dto.Email;
+                var passwordHash = new PasswordHasher<Account>().HashPassword(account, dto.Password);
+                account.Password = passwordHash;
+                _context.Account.Add(account);
+
+                await _context.SaveChangesAsync();
+                await _unitOfWork.CommitAsync();
+                return dto;
+
+            }
+            catch (Exception ex)
+            {
+                await _unitOfWork.RollbackAsync();
+                throw new Exception("Error registering customer", ex);
+            }
         }
     }
 }
