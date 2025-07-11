@@ -15,6 +15,7 @@ The Badminton Court Booking application is an online court reservation system de
 - ASP.NET Web Api
 - Microsoft SQL Server
 - JWT Authentication
+- SMTP (Sending Email)
 
 ## 📌 Prerequisite
 - VS Studio 2022
