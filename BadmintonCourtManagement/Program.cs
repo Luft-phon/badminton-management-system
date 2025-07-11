@@ -5,6 +5,7 @@ using BadmintonCourtManagement.Application.Utils;
 using BadmintonCourtManagement.Domain.Interface;
 using BadmintonCourtManagement.Infrastructure.Data;
 using BadmintonCourtManagement.Infrastructure.Repository;
+using BadmintonCourtManagement.Infrastructure.TempData;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -32,6 +33,9 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<UserUseCase>();
 builder.Services.AddScoped<TokenValidation>(); 
 builder.Services.AddScoped<ITokenRepo, TokenRepo>();
+builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<EmailValidation>();
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         .AddJwtBearer(options =>
         {
@@ -49,6 +53,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 
 // Fix for CS0118: Correctly call AddDbContext with a lambda to configure the options
+builder.Services.AddSingleton<VerificationStorage>();
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     var connetionString = builder.Configuration.GetConnectionString("DefaultConnection"); //read connection string from appsettings.json

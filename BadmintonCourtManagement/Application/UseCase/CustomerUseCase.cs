@@ -1,12 +1,18 @@
-﻿using BadmintonCourtManagement.Application.DTO.Request.UserRequest;
+﻿using Azure.Core;
+using BadmintonCourtManagement.Application.DTO.Request.SendMailRequest;
+using BadmintonCourtManagement.Application.DTO.Request.UserRequest;
 using BadmintonCourtManagement.Application.DTO.Response.CustomerResponseDTO;
+using BadmintonCourtManagement.Application.Interface;
+using BadmintonCourtManagement.Application.Utils;
 using BadmintonCourtManagement.Domain.Entity;
 using BadmintonCourtManagement.Domain.Interface;
 using BadmintonCourtManagement.Infrastructure.Data;
 using BadmintonCourtManagement.Infrastructure.Repository;
+using BadmintonCourtManagement.Infrastructure.TempData;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using System.Numerics;
 
 namespace BadmintonCourtManagement.Application.UseCase
@@ -16,13 +22,19 @@ namespace BadmintonCourtManagement.Application.UseCase
         private readonly ApplicationDbContext _context;
         private readonly ICustomerRepo _customerRepo;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IEmailService _emailService;
+        private readonly EmailValidation _emailValidation;
+        private readonly VerificationStorage _verificationStorage;
 
-        public CustomerUseCase(ApplicationDbContext context, ICustomerRepo customerRepo, IUnitOfWork unitOfWork)
+        public CustomerUseCase(ApplicationDbContext context, ICustomerRepo customerRepo, IUnitOfWork unitOfWork, IEmailService emailService, EmailValidation emailValidation, VerificationStorage verificationStorage)
         {
             _context = context;
             _customerRepo = customerRepo;
             _unitOfWork = unitOfWork;
-        }
+            _emailService = emailService;
+            _emailValidation = emailValidation;
+            _verificationStorage = verificationStorage;
+        }   
 
         public async Task<IEnumerable<GetCustomerResponseDTO>> GetAllCustomers(int pageNumber, int pageSize)
         {
@@ -100,20 +112,21 @@ namespace BadmintonCourtManagement.Application.UseCase
            
         }
 
-        public async Task<UserRegistrationRequestDTO> RegisterCustomer(UserRegistrationRequestDTO dto)
+        public async Task<string> RegisterCustomer(VerificationCodeRequestDTO dto)
         {
             await _unitOfWork.BeginTransactionAsync();
             try
             {
-                var accounts = await _context.Account.AnyAsync(u => u.Email == dto.Email);
-                if (accounts == true)
-                {
+                // Check if user enter correct verification code
+                var result = _verificationStorage.GetCode(dto.Email);
+                if (result is null || !result.Value.Found || result.Value.Code != dto.Code)
                     return null;
-                }
+
+                var data = result.Value.Data;
                 var user = new User();
-                user.FirstName = dto.FirstName;
-                user.LastName = dto.LastName;   
-                user.Phone = dto.Phone;
+                user.FirstName = data.FirstName;
+                user.LastName = data.LastName;   
+                user.Phone = data.Phone;
                 user.Role = Domain.Enum.Role.Member;
                 user.NotificationID = 1;
                  _context.User.Add(user);
@@ -121,14 +134,15 @@ namespace BadmintonCourtManagement.Application.UseCase
                 var account = new Account();
                 account.User = user;
                 account.CreateAt = DateTime.UtcNow;
-                account.Email = dto.Email;
-                var passwordHash = new PasswordHasher<Account>().HashPassword(account, dto.Password);
+                account.Email = data.Email;
+                var passwordHash = new PasswordHasher<Account>().HashPassword(account, data.Password);
                 account.Password = passwordHash;
                 _context.Account.Add(account);
 
                 await _context.SaveChangesAsync();
                 await _unitOfWork.CommitAsync();
-                return dto;
+                _verificationStorage.Remove(dto.Email);
+                return "Register Successfully";
 
             }
             catch (Exception ex)

@@ -1,0 +1,56 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Thông báo hủy Workshop</title>
+</head>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        padding: 20px;
+    }
+
+    .container {
+        max-width: 600px;
+        margin: auto;
+        background-color: #ffffff;
+        /* padding: 30px; */
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .unmonitored-message {
+        font-size: 0.8em;
+        color: #888;
+        margin-top: 20px;
+    }
+
+    .title {
+        text-align: start;
+        margin-bottom: 20px;
+        background-color: #f4f4f4;
+        border: 1px solid #ddd;
+        padding: 10px 20px;
+    }
+
+    .content {
+        padding: 10px 20px;
+        line-height: 1.6;
+    }
+</style>
+<body>
+    <div class="container">
+        <div class="title">
+            <h2>Verify your email address</h2>
+        </div>
+        <div class="content">
+            <p>Thanks for verifying your <strong>{{email}}</strong> account!</p>
+            <p><strong>Your code is: {{code}}</strong></p> <br />
+            <p>Best regards,</p>
+            <p><em>Badminton Westminster Court</em></p>
+            <p class="unmonitored-message">This message was sent from an unmonitored email address. Please do not reply to this message.</p>
+        </div>
+
+    </div>
+</body>
+</html>

@@ -1,4 +1,5 @@
-﻿using BadmintonCourtManagement.Application.DTO.Request.UserRequest;
+﻿using BadmintonCourtManagement.Application.DTO.Request.SendMailRequest;
+using BadmintonCourtManagement.Application.DTO.Request.UserRequest;
 using BadmintonCourtManagement.Application.DTO.Response;
 using BadmintonCourtManagement.Application.DTO.Response.UserResponseDTO;
 using BadmintonCourtManagement.Application.Interface;
@@ -21,7 +22,7 @@ namespace BadmintonCourtManagement.Controllers
         }
 
         [HttpPost("register-user")]
-        public async Task<IActionResult> Register(UserRegistrationRequestDTO dto)
+        public async Task<IActionResult> Register(VerificationCodeRequestDTO dto)
         {
             try
             {
@@ -30,7 +31,7 @@ namespace BadmintonCourtManagement.Controllers
                 {
                     return BadRequest(ErrorResponse.InternalError(StatusCodes.Status400BadRequest, "User registration failed"));
                 }
-                return Ok(ApiResponse<UserRegistrationRequestDTO>.Success(user));
+                return Ok(ApiResponse<string>.Success(user));
             }
             catch (Exception ex)
             {

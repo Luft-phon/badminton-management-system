@@ -17,5 +17,6 @@ namespace BadmintonCourtManagement.Domain.Entity
         public User User { get; set; }
         // 1 to 1: account token
         public Token Token { get; set; }
+        // 1 to 1: account verification
     }
 }
