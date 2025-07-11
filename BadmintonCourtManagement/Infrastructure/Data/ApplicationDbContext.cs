@@ -48,6 +48,7 @@ namespace BadmintonCourtManagement.Infrastructure.Data
                 .WithOne(p => p.Booking)
                 .HasForeignKey<Payment>(p => p.BookingID); // Shared key
 
+          
             // one to one
             modelBuilder.Entity<Token>()
                .HasKey(t => t.UserID); 
