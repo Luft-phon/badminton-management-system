@@ -66,7 +66,7 @@ namespace BadmintonCourtManagement.Application.Service
             var accounts = await _context.Account.AnyAsync(u => u.Email == dto.Email);
             if (accounts == true)
             {
-                return null;
+                throw new Exception("Email is already existed");
             }
             var account = await _context.Account.FirstOrDefaultAsync(u => u.Email == dto.Email);
             var code = await _emailValidation.GenerateVerificationCode(account);

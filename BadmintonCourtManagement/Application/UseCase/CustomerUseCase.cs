@@ -120,9 +120,11 @@ namespace BadmintonCourtManagement.Application.UseCase
                 // Check if user enter correct verification code
                 var result = _verificationStorage.GetCode(dto.Email);
                 if (result is null || !result.Value.Found || result.Value.Code != dto.Code)
-                    return null;
+                    return null;                
 
+                // Get all request data
                 var data = result.Value.Data;
+
                 var user = new User();
                 user.FirstName = data.FirstName;
                 user.LastName = data.LastName;   

@@ -5,8 +5,6 @@ using BadmintonCourtManagement.Domain.Entity;
 using BadmintonCourtManagement.Domain.Enum;
 using BadmintonCourtManagement.Domain.Interface;
 using BadmintonCourtManagement.Infrastructure.Data;
-using BadmintonCourtManagement.Infrastructure.Repository;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
 namespace BadmintonCourtManagement.Application.UseCase
@@ -16,12 +14,14 @@ namespace BadmintonCourtManagement.Application.UseCase
         private readonly ApplicationDbContext _context;
         private readonly IUnitOfWork _unitOfWork;
         private readonly BookingValidation _bookingValidation;
+        private readonly IBookingRepo _bookingRepo;
 
-        public BookingUseCase(ApplicationDbContext context, IUnitOfWork unitOfWork, BookingValidation bookingValidation)
+        public BookingUseCase(ApplicationDbContext context, IUnitOfWork unitOfWork, BookingValidation bookingValidation, IBookingRepo bookingRepo)
         {
             _context = context;
             _unitOfWork = unitOfWork;
             _bookingValidation = bookingValidation;
+            _bookingRepo = bookingRepo;
         }
 
         public async Task<CreateBookingResponseDTO> CreateBooking(CreateBookingRequestDTO dto)
@@ -33,11 +33,7 @@ namespace BadmintonCourtManagement.Application.UseCase
                 var user = await _context.User.FindAsync(dto.UserID);
                 if (user == null)
                 {
-                    return new CreateBookingResponseDTO
-                    {
-                        Status = 404,
-                        Messege = "Can find userID"
-                    };
+                    throw new Exception("Invalid user ID");
                 }
                 var courtEnums = dto.CourtNames
                     .Select(name => Enum.Parse<CourtName>(name))
@@ -54,11 +50,7 @@ namespace BadmintonCourtManagement.Application.UseCase
                 bool isValid = await _bookingValidation.isValidTime(dto);
                 if (isConflict || !isValidDuration || !isValid)
                 {
-                    return new CreateBookingResponseDTO
-                    {
-                        Status = 400,
-                        Messege = "Please select an available time"
-                    };
+                    throw new Exception("Invalid booking time");
                 }
                 else
                 {
@@ -96,7 +88,7 @@ namespace BadmintonCourtManagement.Application.UseCase
                     var payment = new Payment
                     {
                         BookingID = booking.BookingID,
-                        Amount = 0,
+                        Amount = ((end - start).TotalHours) * 40.00,
                         PaidAt = null,
                         Status = PaymentStatus.Uncomplete
                     };
@@ -119,9 +111,29 @@ namespace BadmintonCourtManagement.Application.UseCase
             catch (Exception ex)
             {
                 await _unitOfWork.RollbackAsync();
-                throw new Exception("Error: ", ex);
+                throw;
             }
         }
-        
+
+        public async Task<IEnumerable<BookingDetailResponseDTO>> GetBookingDetail(BookingDetailRequestDTO dto)
+        {
+            await _unitOfWork.BeginTransactionAsync();
+            try
+            {
+                var result = new List<BookingDetailResponseDTO>();
+                var bookingDetail = await _bookingRepo.GetBookingDetails(dto.email);
+                if (bookingDetail is null)
+                {
+                    return null;
+                }
+                result.AddRange(bookingDetail);
+                await _unitOfWork.CommitAsync();
+                return result.ToList();
+            }
+            catch (Exception ex) { 
+                await _unitOfWork.RollbackAsync();
+                throw;
+            }
+        }
     }
 }

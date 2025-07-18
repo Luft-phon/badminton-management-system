@@ -8,7 +8,7 @@ namespace BadmintonCourtManagement.Infrastructure.TempData
 
         public void SaveCode(string email, string code, UserRegistrationRequestDTO data)
         {
-            _store[email] = (code, data, DateTime.UtcNow.AddMinutes(10));
+            _store[email] = (code, data, DateTime.UtcNow.AddMinutes(5));
         }
 
         public (bool Found, string Code, UserRegistrationRequestDTO Data)? GetCode(string email)

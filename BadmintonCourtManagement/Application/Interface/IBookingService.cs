@@ -5,6 +5,7 @@ namespace BadmintonCourtManagement.Application.Interface
 {
     public interface IBookingService
     {
-        Task<CreateBookingResponseDTO> CreateBooking(CreateBookingRequestDTO request); 
+        Task<CreateBookingResponseDTO> CreateBooking(CreateBookingRequestDTO request);
+        Task<IEnumerable<BookingDetailResponseDTO>> GetBookingDetail(BookingDetailRequestDTO dto);
     }
 }

@@ -3,6 +3,7 @@ using BadmintonCourtManagement.Application.DTO.Response;
 using BadmintonCourtManagement.Application.DTO.Response.BookingResponseDTO;
 using BadmintonCourtManagement.Application.Interface;
 using BadmintonCourtManagement.Application.Service;
+using BadmintonCourtManagement.Domain.Entity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -29,6 +30,21 @@ namespace BadmintonCourtManagement.Controllers.CustomerController
             {
                 var booking = await _service.CreateBooking(dto);
                 return Ok(ApiResponse<CreateBookingResponseDTO>.Success(booking));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ErrorResponse.InternalError(500, ex.Message));
+            }
+        }
+
+        [Authorize(Roles = "Member")]
+        [HttpPost("booking-detail")]
+        public async Task<IActionResult> GetBookingsDetail(BookingDetailRequestDTO dto)
+        {
+            try
+            {
+                var booking = await _service.GetBookingDetail(dto);
+                return Ok(ApiResponse<IEnumerable<BookingDetailResponseDTO>>.Success(booking));
             }
             catch (Exception ex)
             {

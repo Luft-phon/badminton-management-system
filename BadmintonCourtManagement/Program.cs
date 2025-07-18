@@ -2,6 +2,7 @@
 using BadmintonCourtManagement.Application.Service;
 using BadmintonCourtManagement.Application.UseCase;
 using BadmintonCourtManagement.Application.Utils;
+using BadmintonCourtManagement.Configuration;
 using BadmintonCourtManagement.Domain.Interface;
 using BadmintonCourtManagement.Infrastructure.Data;
 using BadmintonCourtManagement.Infrastructure.Repository;
@@ -18,39 +19,12 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddScoped<ICustomerService, CustomerService>();
-//builder.Services.AddScoped<ApplicationDbContext>();
-builder.Services.AddScoped<CustomerUseCase>();
-builder.Services.AddScoped<ICustomerRepo, CustomerRepo>();
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddScoped<IBookingService, BookingService>();
-builder.Services.AddScoped<BookingUseCase>();
-builder.Services.AddScoped<BookingValidation>();
-builder.Services.AddScoped<ICourtService, CourtService>();
-builder.Services.AddScoped<CourtUseCase>();
-builder.Services.AddScoped<ICourtRepo, CourtRepo>(); 
-builder.Services.AddScoped<IUserService, UserService>(); 
-builder.Services.AddScoped<UserUseCase>();
-builder.Services.AddScoped<TokenValidation>(); 
-builder.Services.AddScoped<ITokenRepo, TokenRepo>();
-builder.Services.AddScoped<IEmailService, EmailService>();
-builder.Services.AddScoped<EmailValidation>();
+builder.Services.AddApplicationServices();   // Inject Dependencies
+builder.Services.AddAppCors();  // Connect to frontend
+builder.Services.AddJwtConfiguration(builder.Configuration); // Jwt
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-        .AddJwtBearer(options =>
-        {
-            options.TokenValidationParameters = new TokenValidationParameters
-            {
-                ValidateIssuer = true,
-                ValidIssuer = builder.Configuration["AppSettings:Issuer"],
-                ValidateAudience = true,
-                ValidAudience = builder.Configuration["AppSettings:Audience"],
-                ValidateLifetime = true,
-                IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(builder.Configuration["AppSettings:Token"]!)),
-                ValidateIssuerSigningKey = true
-            };
-        });
 
+// Register for CORS
 
 // Fix for CS0118: Correctly call AddDbContext with a lambda to configure the options
 builder.Services.AddSingleton<VerificationStorage>();
@@ -73,7 +47,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseAppCors();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

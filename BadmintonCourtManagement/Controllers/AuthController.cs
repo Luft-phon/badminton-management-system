@@ -3,6 +3,7 @@ using BadmintonCourtManagement.Application.DTO.Request.UserRequest;
 using BadmintonCourtManagement.Application.DTO.Response;
 using BadmintonCourtManagement.Application.DTO.Response.UserResponseDTO;
 using BadmintonCourtManagement.Application.Interface;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -74,5 +75,13 @@ namespace BadmintonCourtManagement.Controllers
                 return BadRequest(ErrorResponse.InternalError(400, ex.Message));
             }
         }
+
+        [Authorize(Roles = "Member")]
+        [HttpGet("check-token")]
+        public IActionResult CheckToken()
+        {
+            return Ok("Token is valid");
+        }
+
     }
 }
