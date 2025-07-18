@@ -135,5 +135,27 @@ namespace BadmintonCourtManagement.Application.UseCase
                 throw;
             }
         }
+
+        internal async Task<IEnumerable<BookingDetailResponseDTO>> GetBookingHistory(BookingDetailRequestDTO dto)
+        {
+            await _unitOfWork.BeginTransactionAsync();
+            try
+            {
+                var result = new List<BookingDetailResponseDTO>();
+                var bookingDetail = await _bookingRepo.GetBookingHistory(dto.email);
+                if (bookingDetail is null)
+                {
+                    return null;
+                }
+                result.AddRange(bookingDetail);
+                await _unitOfWork.CommitAsync();
+                return result.ToList();
+            }
+            catch (Exception ex)
+            {
+                await _unitOfWork.RollbackAsync();
+                throw;
+            }
+        }
     }
 }

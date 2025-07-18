@@ -23,5 +23,10 @@ namespace BadmintonCourtManagement.Application.Service
         {
             return _useCase.GetBookingDetail(dto);
         }
+
+        public Task<IEnumerable<BookingDetailResponseDTO>> GetBookingsHistory(BookingDetailRequestDTO dto)
+        {
+            return _useCase.GetBookingHistory(dto);
+        }
     }
 }
