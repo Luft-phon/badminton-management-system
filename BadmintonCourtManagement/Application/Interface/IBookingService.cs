@@ -7,5 +7,6 @@ namespace BadmintonCourtManagement.Application.Interface
     {
         Task<CreateBookingResponseDTO> CreateBooking(CreateBookingRequestDTO request);
         Task<IEnumerable<BookingDetailResponseDTO>> GetBookingDetail(BookingDetailRequestDTO dto);
+        Task<IEnumerable<BookingDetailResponseDTO>> GetBookingsHistory(BookingDetailRequestDTO dto);
     }
 }

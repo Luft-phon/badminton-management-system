@@ -51,5 +51,19 @@ namespace BadmintonCourtManagement.Controllers.CustomerController
                 return BadRequest(ErrorResponse.InternalError(500, ex.Message));
             }
         }
+        [Authorize(Roles = "Member, Staff, Owner")]
+        [HttpPost("booking-history")]
+        public async Task<IActionResult> GetBookingsHistory(BookingDetailRequestDTO dto)
+        {
+            try
+            {
+                var booking = await _service.GetBookingsHistory(dto);
+                return Ok(ApiResponse<IEnumerable<BookingDetailResponseDTO>>.Success(booking));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ErrorResponse.InternalError(500, ex.Message));
+            }
+        }
     }
 }
