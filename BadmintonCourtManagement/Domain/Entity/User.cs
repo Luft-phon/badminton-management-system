@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BadmintonCourtManagement.Domain.Entity
 {
+    [Index(nameof(UserID))]
     public class User
     {
         public int UserID { get; set; }

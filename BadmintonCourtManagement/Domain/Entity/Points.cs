@@ -1,4 +1,5 @@
 ﻿using BadmintonCourtManagement.Domain.Enum;
+using Microsoft.EntityFrameworkCore;
 
 namespace BadmintonCourtManagement.Domain.Entity
 {
