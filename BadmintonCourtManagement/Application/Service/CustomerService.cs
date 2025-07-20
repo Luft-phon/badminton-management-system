@@ -1,6 +1,7 @@
 ﻿using BadmintonCourtManagement.Application.DTO.Request.SendMailRequest;
 using BadmintonCourtManagement.Application.DTO.Request.UserRequest;
 using BadmintonCourtManagement.Application.DTO.Response.CustomerResponseDTO;
+using BadmintonCourtManagement.Application.DTO.Response.UserResponseDTO;
 using BadmintonCourtManagement.Application.Interface;
 using BadmintonCourtManagement.Application.UseCase;
 using BadmintonCourtManagement.Domain.Entity;
@@ -22,6 +23,11 @@ namespace BadmintonCourtManagement.Application.Service
         public Task<GetCustomerByIdDTO> GetCustomerById(int id)
         {
             return useCase.GetCustomerById(id);
+        }
+
+        public Task<GetUserDetailResponseDTO> GetUserDetail(UserDetailRequestDTO dto)
+        {
+            return useCase.GetUserDetail(dto);
         }
 
         public Task<string> RegisterCustomer(VerificationCodeRequestDTO dto)

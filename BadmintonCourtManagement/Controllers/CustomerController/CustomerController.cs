@@ -2,6 +2,7 @@
 using BadmintonCourtManagement.Application.DTO.Request.UserRequest;
 using BadmintonCourtManagement.Application.DTO.Response;
 using BadmintonCourtManagement.Application.DTO.Response.CustomerResponseDTO;
+using BadmintonCourtManagement.Application.DTO.Response.UserResponseDTO;
 using BadmintonCourtManagement.Application.Interface;
 using BadmintonCourtManagement.Application.Service;
 using BadmintonCourtManagement.Domain.Entity;
@@ -65,7 +66,7 @@ namespace BadmintonCourtManagement.Controllers.CustomerController
             }
         }
 
-        [Authorize(Roles = "Staff, Owner")]
+        [Authorize(Roles = "Staff, Owner, Member")]
         [HttpPut]
         [Route("update-customer")]
         public async Task<IActionResult> UpdateCustomer([FromBody] UpdateCustomerRequestDTO dto)
@@ -81,6 +82,20 @@ namespace BadmintonCourtManagement.Controllers.CustomerController
             }
             catch (Exception ex)
             {
+                return BadRequest(ErrorResponse.InternalError(StatusCodes.Status500InternalServerError, ex.Message));
+            }
+        }
+
+        [Authorize(Roles = "Staff, Member, Owner")]
+        [HttpPost("user-detail")]
+        public async Task<IActionResult> GetUserDetail(UserDetailRequestDTO dto)
+        {
+            try
+            {
+                var userDetail = await _customerService.GetUserDetail(dto); 
+                return Ok(ApiResponse<GetUserDetailResponseDTO>.Success(userDetail));
+            }
+            catch (Exception ex) {
                 return BadRequest(ErrorResponse.InternalError(StatusCodes.Status500InternalServerError, ex.Message));
             }
         }

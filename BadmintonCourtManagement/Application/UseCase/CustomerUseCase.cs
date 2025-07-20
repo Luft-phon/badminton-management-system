@@ -1,19 +1,16 @@
-﻿using Azure.Core;
-using BadmintonCourtManagement.Application.DTO.Request.SendMailRequest;
+﻿using BadmintonCourtManagement.Application.DTO.Request.SendMailRequest;
 using BadmintonCourtManagement.Application.DTO.Request.UserRequest;
 using BadmintonCourtManagement.Application.DTO.Response.CustomerResponseDTO;
+using BadmintonCourtManagement.Application.DTO.Response.UserResponseDTO;
 using BadmintonCourtManagement.Application.Interface;
 using BadmintonCourtManagement.Application.Utils;
 using BadmintonCourtManagement.Domain.Entity;
 using BadmintonCourtManagement.Domain.Interface;
 using BadmintonCourtManagement.Infrastructure.Data;
-using BadmintonCourtManagement.Infrastructure.Repository;
 using BadmintonCourtManagement.Infrastructure.TempData;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
-using System.Numerics;
+
 
 namespace BadmintonCourtManagement.Application.UseCase
 {
@@ -141,6 +138,15 @@ namespace BadmintonCourtManagement.Application.UseCase
                 account.Password = passwordHash;
                 _context.Account.Add(account);
 
+                var point = new Points();
+                point.Status = Domain.Enum.PointStatus.Pending;
+                point.Point = 0;
+                point.User = user;
+                point.TotalRedeem = 0;
+                point.ClaimDate = null;
+                _context.Points.Add(point);
+
+
                 await _context.SaveChangesAsync();
                 await _unitOfWork.CommitAsync();
                 _verificationStorage.Remove(dto.Email);
@@ -151,6 +157,32 @@ namespace BadmintonCourtManagement.Application.UseCase
             {
                 await _unitOfWork.RollbackAsync();
                 throw new Exception("Error registering customer", ex);
+            }
+        }
+
+        public async Task<GetUserDetailResponseDTO> GetUserDetail(UserDetailRequestDTO dto)
+        {
+            try
+            {
+                var user = await _customerRepo.GetUserDetail(dto);
+
+                if (user == null)
+                {
+                    throw new Exception("Not found");
+                }
+                var userDetail = new GetUserDetailResponseDTO
+                {
+                    Email = user.Email,
+                    Dob = user.Dob,
+                    Exp = user.Exp,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Phone = user.Phone,
+                };
+                return userDetail;
+            }
+            catch (Exception ex) {
+                throw;
             }
         }
     }

@@ -1,4 +1,6 @@
-﻿using BadmintonCourtManagement.Application.DTO.Response.CustomerResponseDTO;
+﻿using BadmintonCourtManagement.Application.DTO.Request.UserRequest;
+using BadmintonCourtManagement.Application.DTO.Response.CustomerResponseDTO;
+using BadmintonCourtManagement.Application.DTO.Response.UserResponseDTO;
 using BadmintonCourtManagement.Domain.Entity;
 using BadmintonCourtManagement.Domain.Interface;
 using BadmintonCourtManagement.Infrastructure.Data;
@@ -113,6 +115,19 @@ WHERE u.UserID = @UserId
 GROUP BY b.BookingDate, b.StartTime, b.EndTime, c.CourtName";
 
             var result = await con.QueryAsync<BookingHistoryResponseDTO>(sqlQuery, new { UserId = id });
+            return result;
+        }
+
+        public async Task<GetUserDetailResponseDTO> GetUserDetail(UserDetailRequestDTO dto)
+        {
+            using var con = new SqlConnection(_connectionString);
+            string sqlQuery = @"SELECT u.FirstName, u.LastName, u.Dob, c.Email, u.Phone, p.Point
+FROM [User] u 
+JOIN Account c ON u.UserID = c.UserID
+JOIN Points p ON p.UserID = u.UserID
+WHERE c.Email = @Email";
+
+            var result = await con.QueryFirstOrDefaultAsync<GetUserDetailResponseDTO>(sqlQuery, new { Email = dto.email });
             return result;
         }
     }
