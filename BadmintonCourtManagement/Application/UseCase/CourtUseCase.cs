@@ -1,8 +1,11 @@
 ﻿using BadmintonCourtManagement.Application.DTO.Request.CourtRequest;
 using BadmintonCourtManagement.Application.DTO.Response.CourtResponseDTO;
+using BadmintonCourtManagement.Application.DTO.Response.CustomerResponseDTO;
+using BadmintonCourtManagement.Domain.Entity;
 using BadmintonCourtManagement.Domain.Enum;
 using BadmintonCourtManagement.Domain.Interface;
 using BadmintonCourtManagement.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace BadmintonCourtManagement.Application.UseCase
 {
@@ -19,7 +22,35 @@ namespace BadmintonCourtManagement.Application.UseCase
         }
         public async Task<IEnumerable<GetCourtResponseDTO>> GetCourts()
         {
-            return await _courtRepo.GetCourts();
+            var court = await _context.Courts
+                .Include(cb => cb.courtBookings)             // left join table
+                   .ThenInclude(c => c.Booking)         
+                      .ToListAsync();
+            var dtoList = court.Select(c => new GetCourtResponseDTO
+            {
+                CourtID = c.CourtID,
+                CourtName = c.CourtName.ToString(),
+                CourtStatus = c.CourtStatus.ToString(),
+                Next_booking_date = c.courtBookings
+                                    .Where(cb => cb.Booking.StartTime > DateTime.UtcNow)
+                                    .OrderByDescending(cb => cb.Booking.StartTime)
+                                    .Select(c => c.Booking.StartTime.ToString("MM/dd/yyyy"))
+                                    .FirstOrDefault(),
+                 Next_booking_hour = c.courtBookings
+                                    .Where(cb => cb.Booking.StartTime > DateTime.UtcNow)
+                                    .OrderByDescending(cb => cb.Booking.StartTime)
+                                    .Select(c => c.Booking.StartTime.ToString("HH:mm"))
+                                    .FirstOrDefault(),
+                booking = c.courtBookings.Select(cb => new BookingHistoryResponseDTO { 
+                    BookingID = cb.Booking.BookingID,
+                    StartTime = cb.Booking.StartTime,
+                    EndTime = cb.Booking.EndTime,
+                    BookedDate = cb.Booking.BookingDate,
+                    CourtName = cb.Court.CourtName.ToString(),
+                    Status = cb.Booking.Status.ToString()
+                }).ToList()
+            }).ToList();
+            return dtoList;
         }
 
         public async Task<UpdateCourtStatusRequestDTO> UpdateCourt(UpdateCourtStatusRequestDTO dto)

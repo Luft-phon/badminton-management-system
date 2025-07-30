@@ -65,6 +65,7 @@ namespace BadmintonCourtManagement.Application.UseCase
                 Exp = user.Exp,
                 bookingHistory = bookingsHistory.Select(b => new BookingHistoryResponseDTO
                 {
+                    BookingID = b.BookingID,
                     BookedDate = b.BookedDate,
                     StartTime = b.StartTime,
                     EndTime = b.EndTime,
@@ -172,12 +173,14 @@ namespace BadmintonCourtManagement.Application.UseCase
                 }
                 var userDetail = new GetUserDetailResponseDTO
                 {
+                    UserID = user.UserID,
                     Email = user.Email,
                     Dob = user.Dob,
                     Exp = user.Exp,
                     FirstName = user.FirstName,
                     LastName = user.LastName,
                     Phone = user.Phone,
+                    CreateAt = user.CreateAt
                 };
                 return userDetail;
             }

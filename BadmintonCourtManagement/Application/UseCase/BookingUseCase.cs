@@ -6,6 +6,7 @@ using BadmintonCourtManagement.Domain.Enum;
 using BadmintonCourtManagement.Domain.Interface;
 using BadmintonCourtManagement.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace BadmintonCourtManagement.Application.UseCase
 {
@@ -136,7 +137,33 @@ namespace BadmintonCourtManagement.Application.UseCase
             }
         }
 
-        internal async Task<IEnumerable<BookingDetailResponseDTO>> GetBookingHistory(BookingDetailRequestDTO dto)
+        public async Task<string> CancelBooking(int bookingID)
+        {
+            await _unitOfWork.BeginTransactionAsync();
+            try
+            {
+                string result;
+                var bookings = await _context.Bookings
+                    .Where(b => b.StartTime > DateTime.UtcNow)
+                    .FirstOrDefaultAsync(b => b.BookingID == bookingID);
+                    
+                if (bookings == null) {
+                    throw new Exception("Booking is not found");
+                }
+                bookings.Status = BookingStatus.Canceled;
+                _context.Update(bookings);
+                await _context.SaveChangesAsync();
+                 result = bookings.Status.ToString();
+                await _unitOfWork.CommitAsync();
+                return result;
+            }
+            catch (Exception ex) { 
+                await _unitOfWork.RollbackAsync();
+                throw;
+            }
+        }
+
+        public async Task<IEnumerable<BookingDetailResponseDTO>> GetBookingHistory(BookingDetailRequestDTO dto)
         {
             await _unitOfWork.BeginTransactionAsync();
             try
