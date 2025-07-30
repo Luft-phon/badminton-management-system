@@ -14,6 +14,11 @@ namespace BadmintonCourtManagement.Application.Service
             _useCase = useCase;
         }
 
+        public Task<string> CancelBooking(int bookingID)
+        {
+            return _useCase.CancelBooking(bookingID);
+        }
+
         public Task<CreateBookingResponseDTO> CreateBooking(CreateBookingRequestDTO dto)
         {
             return _useCase.CreateBooking(dto);

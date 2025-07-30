@@ -2,6 +2,7 @@
 {
     public class BookingHistoryResponseDTO
     {
+        public int BookingID { get; set; }
         public DateTime BookedDate { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }

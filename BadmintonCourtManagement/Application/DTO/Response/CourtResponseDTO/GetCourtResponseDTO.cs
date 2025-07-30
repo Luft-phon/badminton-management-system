@@ -1,4 +1,6 @@
-﻿namespace BadmintonCourtManagement.Application.DTO.Response.CourtResponseDTO
+﻿using BadmintonCourtManagement.Application.DTO.Response.CustomerResponseDTO;
+
+namespace BadmintonCourtManagement.Application.DTO.Response.CourtResponseDTO
 {
     public class GetCourtResponseDTO
     {
@@ -7,5 +9,6 @@
         public string CourtStatus { get; set; }
         public string? Next_booking_date { get; set; }
         public string? Next_booking_hour { get; set; }
+        public List<BookingHistoryResponseDTO> booking { get; set; }
     }
 }

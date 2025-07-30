@@ -18,7 +18,7 @@ namespace BadmintonCourtManagement.Controllers.CourtController
             this.courtService = courtService;
         }
 
-        [Authorize(Roles = "Staff, Owner")]
+        [Authorize(Roles = "Staff, Owner, Member")]
         [HttpGet]
         [Route("getCourts")]
         public async Task<IActionResult> GetCourts()
@@ -49,5 +49,6 @@ namespace BadmintonCourtManagement.Controllers.CourtController
                 return BadRequest(ErrorResponse.InternalError(500, ex.Message));
             }
         }
+
     }
 }

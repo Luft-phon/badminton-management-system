@@ -65,5 +65,20 @@ namespace BadmintonCourtManagement.Controllers.CustomerController
                 return BadRequest(ErrorResponse.InternalError(500, ex.Message));
             }
         }
+
+        [Authorize(Roles = "Member, Staff, Owner")]
+        [HttpPost("cancel-booking")]
+        public async Task<IActionResult> CanceledBooking([FromBody] int bookingID)
+        {
+            try
+            {
+                var update = await _service.CancelBooking(bookingID);
+                return Ok(update);
+            }
+            catch (Exception ex) { 
+                return BadRequest(ErrorResponse.InternalError(500, ex.Message));
+            }
+        }
+
     }
 }

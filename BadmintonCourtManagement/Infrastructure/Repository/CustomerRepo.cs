@@ -106,13 +106,13 @@ GROUP BY u.FirstName + ' ' + u.LastName, u.Phone, u.UserID";
         public async Task<IEnumerable<BookingHistoryResponseDTO>> GetCustomerBookingHistory(int id)
         {
             using var con = new SqlConnection(_connectionString);
-            string sqlQuery = @"Select CAST(b.BookingDate AS DATE) as BookedDate, b.StartTime, b.EndTime, c.CourtName
+            string sqlQuery = @"Select b.BookingID, CAST(b.BookingDate AS DATE) as BookedDate, b.StartTime, b.EndTime, c.CourtName
 FROM [User] u
 JOIN Bookings b ON u.UserID = b.UserID
 JOIN CourtBookings cb ON cb.BookingId = b.BookingID
 JOIN Courts c ON c.CourtID = cb.CourtId
 WHERE u.UserID = @UserId
-GROUP BY b.BookingDate, b.StartTime, b.EndTime, c.CourtName";
+GROUP BY b.BookingDate, b.StartTime, b.EndTime, c.CourtName, b.BookingID";
 
             var result = await con.QueryAsync<BookingHistoryResponseDTO>(sqlQuery, new { UserId = id });
             return result;
@@ -121,10 +121,10 @@ GROUP BY b.BookingDate, b.StartTime, b.EndTime, c.CourtName";
         public async Task<GetUserDetailResponseDTO> GetUserDetail(UserDetailRequestDTO dto)
         {
             using var con = new SqlConnection(_connectionString);
-            string sqlQuery = @"SELECT u.FirstName, u.LastName, u.Dob, c.Email, u.Phone, p.Point
+            string sqlQuery = @"SELECT u.UserID, u.FirstName, u.LastName, CONVERT(VARCHAR(10), u.Dob, 101) as Dob, c.Email, u.Phone, p.Point, c.CreateAt
 FROM [User] u 
-JOIN Account c ON u.UserID = c.UserID
-JOIN Points p ON p.UserID = u.UserID
+LEFT JOIN Account c ON u.UserID = c.UserID
+LEFT JOIN Points p ON p.UserID = u.UserID
 WHERE c.Email = @Email";
 
             var result = await con.QueryFirstOrDefaultAsync<GetUserDetailResponseDTO>(sqlQuery, new { Email = dto.email });
