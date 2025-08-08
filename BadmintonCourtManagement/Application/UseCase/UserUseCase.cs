@@ -29,9 +29,9 @@ namespace BadmintonCourtManagement.Application.UseCase
         public async Task<TokenResponseDTO> Login(LoginRequestDTO dto)
         {
             var account = await _context.Account.FirstOrDefaultAsync(u => u.Email == dto.Email);
-            if (account == null)
+            if (account == null || account.Status.Equals("Inactive"))
             {
-                return null;
+                throw new Exception("Account does not exist");
             }
             var user = await _context.User.FirstOrDefaultAsync(u => u.UserID == account.UserID);
             var hashPassword = new PasswordHasher<Account>().VerifyHashedPassword(account, account.Password, dto.Password);
@@ -52,7 +52,8 @@ namespace BadmintonCourtManagement.Application.UseCase
             // Validate the existing refresh token
             var account = await _context.Account.FirstOrDefaultAsync(u => u.UserID == dto.UserID);
             var token = await _context.Tokens.FirstOrDefaultAsync(t => t.UserID == dto.UserID && t.RefreshToken == dto.RefreshToken && t.ExpiresAt >= DateTime.UtcNow);
-            if (account == null || token is null) {
+            if (account == null || token is null)
+            {
                 return null;
             }
             var user = await _context.User.FirstOrDefaultAsync(u => u.UserID == account.UserID);
@@ -63,6 +64,37 @@ namespace BadmintonCourtManagement.Application.UseCase
                 RefreshToken = await _tokenRepo.SaveRefreshToken(user)
             };
             return response;
+        }
+
+        public async Task<string> DeleteAccount(int userID)
+        {
+            await _unitOfWork.BeginTransactionAsync();
+            try
+            {
+                var account = await _context.Account.FirstOrDefaultAsync(a => a.User.UserID == userID);
+                if (account == null)
+                {
+                    throw new Exception("Account not found");
+                } else if (account.Status.Equals("Active"))
+                {
+                    throw new Exception("Account is already inactive");
+                }
+                // Revoke the account's token
+
+                // Delete the account
+                //var status = new Account { 
+                account.Status = Domain.Enum.AccountStatus.Inactive; 
+                    //};
+                _context.Account.Update(account);
+                await _context.SaveChangesAsync();
+                await _unitOfWork.CommitAsync();
+                return "Account deleted successfully.";
+            }
+            catch (Exception ex)
+            {
+                await _unitOfWork.RollbackAsync();
+                throw;
+            }
         }
     }
 }

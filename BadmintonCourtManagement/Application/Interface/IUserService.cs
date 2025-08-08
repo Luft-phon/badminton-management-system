@@ -7,5 +7,6 @@ namespace BadmintonCourtManagement.Application.Interface
     {
         Task<TokenResponseDTO> Login(LoginRequestDTO dto);
         Task<TokenResponseDTO> RefreshToken(TokenRefreshRequestDTO dto);
+        Task<string> DeleteAccount(int userID);
     }
 }
