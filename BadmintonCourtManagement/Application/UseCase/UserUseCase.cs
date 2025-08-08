@@ -29,7 +29,7 @@ namespace BadmintonCourtManagement.Application.UseCase
         public async Task<TokenResponseDTO> Login(LoginRequestDTO dto)
         {
             var account = await _context.Account.FirstOrDefaultAsync(u => u.Email == dto.Email);
-            if (account == null || account.Status.Equals("Inactive"))
+            if (account == null || account.Status.Equals(Domain.Enum.AccountStatus.Inactive))
             {
                 throw new Exception("Account does not exist");
             }
@@ -75,7 +75,7 @@ namespace BadmintonCourtManagement.Application.UseCase
                 if (account == null)
                 {
                     throw new Exception("Account not found");
-                } else if (account.Status.Equals("Active"))
+                } else if (account.Status.Equals(Domain.Enum.AccountStatus.Inactive))
                 {
                     throw new Exception("Account is already inactive");
                 }

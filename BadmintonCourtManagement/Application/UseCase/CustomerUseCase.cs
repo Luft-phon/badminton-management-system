@@ -94,6 +94,7 @@ namespace BadmintonCourtManagement.Application.UseCase
                 user.Dob = dto.Dob;
                 user.Phone = dto.Phone;
                 account.Email = dto.Email;
+                account.Status = dto.Status;
                 _context.Update(account);
                 _context.Update(user);
                 await _context.SaveChangesAsync();
