@@ -26,13 +26,13 @@ namespace BadmintonCourtManagement.Controllers.CustomerController
         }
 
         [Authorize(Roles = "Staff, Owner")]
-        [HttpPost]
+        [HttpGet]
         [Route("getCustomers")]
-        public async Task<IActionResult> GetAllCustomers([FromBody] PagingRequest request)
+        public async Task<IActionResult> GetAllCustomers()
         {
             try
             {
-                var customer = await _customerService.GetAllCustomers(request.PageNumber, request.PageSize);
+                var customer = await _customerService.GetAllCustomers();
 
                 if (customer == null)
                 {

@@ -15,9 +15,9 @@ namespace BadmintonCourtManagement.Application.Service
         {
             this.useCase = useCase;
         }
-        public Task<IEnumerable<GetCustomerResponseDTO>> GetAllCustomers(int pageNumber, int pageSize)
+        public Task<IEnumerable<GetCustomerResponseDTO>> GetAllCustomers()
         {
-            return useCase.GetAllCustomers(pageNumber, pageSize);
+            return useCase.GetAllCustomers();
         }
 
         public Task<GetCustomerByIdDTO> GetCustomerById(int id)

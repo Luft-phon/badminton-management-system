@@ -126,6 +126,14 @@ namespace BadmintonCourtManagement.Infrastructure.Data
             modelBuilder.Entity<Booking>()
                 .Property(p => p.Status)
                 .HasConversion(bookingStatusConverter);
+
+            var accountStatusConverter = new ValueConverter<AccountStatus, string>(
+       v => v.ToString(), // enum => string
+       v => (AccountStatus)Enum.Parse(typeof(AccountStatus), v) // string => enum
+   );
+            modelBuilder.Entity<Account>()
+       .Property(u => u.Status)
+       .HasConversion(accountStatusConverter);
         }
     }
 }

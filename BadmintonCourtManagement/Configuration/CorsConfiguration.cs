@@ -11,7 +11,7 @@ namespace BadmintonCourtManagement.Configuration
             {
                 options.AddPolicy("AllowReact", builder =>
                 {
-                    builder.WithOrigins("http://localhost:5173") // React call api from dev server
+                    builder.WithOrigins("http://localhost:5173", "http://localhost:5174") // React call api from dev server
                            .AllowAnyHeader()                    // mọi loại header như Authorization, Content-type, api, method (GET, POST, ...)
                            .AllowAnyMethod()                    // dùng mọi loại như GET, POST, DELETE
                             .AllowCredentials();                // Nếu bạn dùng cookie/JWT

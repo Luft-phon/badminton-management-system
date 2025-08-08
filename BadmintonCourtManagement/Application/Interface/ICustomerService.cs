@@ -8,7 +8,7 @@ namespace BadmintonCourtManagement.Application.Interface
 {
     public interface ICustomerService
     {
-        Task<IEnumerable<GetCustomerResponseDTO>> GetAllCustomers(int pageNumber, int pageSize);
+        Task<IEnumerable<GetCustomerResponseDTO>> GetAllCustomers();
         Task<GetCustomerByIdDTO> GetCustomerById(int id);
         Task<GetUserDetailResponseDTO> GetUserDetail(UserDetailRequestDTO dto);
         Task<string> RegisterCustomer(VerificationCodeRequestDTO dto);

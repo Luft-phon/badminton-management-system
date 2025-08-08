@@ -33,16 +33,13 @@ namespace BadmintonCourtManagement.Application.UseCase
             _verificationStorage = verificationStorage;
         }   
 
-        public async Task<IEnumerable<GetCustomerResponseDTO>> GetAllCustomers(int pageNumber, int pageSize)
+        public async Task<IEnumerable<GetCustomerResponseDTO>> GetAllCustomers()
         {
             var result = new List<GetCustomerResponseDTO>();
             var customer = await _customerRepo.GetAllCustomers();
             result.AddRange(customer);
 
-            return result
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
-                .ToList();
+            return result;
         }
 
 

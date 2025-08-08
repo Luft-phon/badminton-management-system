@@ -8,6 +8,9 @@
         public int TotalBooking { get; set; }
         public DateTime LastBooked { get; set; }
         public string LastCourt { get; set; }
+        public string PaymentStatus { get; set; }
+        public string Dob { get; set; }
+        public string Email { get; set; }
         public string Status { get; set; }
     }
 }
