@@ -70,19 +70,20 @@ namespace BadmintonCourtManagement.Infrastructure.Repository
             using var con = new SqlConnection(_connectionString);
             string sqlQuery = @"SELECT 
     u.UserID,u.FirstName + ' ' + u.LastName AS FullName,
-    u.Phone, 
+    u.Phone, u.Dob, a.Email, a.[Status],
     COUNT(b.BookingID) AS [TotalBooking],
     CASE 
         WHEN COUNT(CASE WHEN p.Status = 'Uncomplete' THEN 1 END) > 0 THEN 'Uncomplete'
         ELSE MAX(p.Status)
-    END AS Status, MAX(CAST(b.EndTime AS DATE)) as LastBooked, MAX(c.CourtName) as LastCourt
+    END AS [PaymentStatus], MAX(CAST(b.EndTime AS DATE)) as LastBooked, MAX(c.CourtName) as LastCourt
 FROM [User] u
 LEFT JOIN Bookings b ON u.UserID = b.UserID
+LEFT JOIN Account a ON u.UserID = a.UserID
 LEFT JOIN Payments p ON b.BookingID = p.BookingID
 LEFT JOIN CourtBookings cb ON cb.BookingId = b.BookingID
 LEFT JOIN Courts c ON c.CourtID = cb.CourtId
 WHERE u.[Role] = 'Member'
-GROUP BY u.FirstName + ' ' + u.LastName, u.Phone, u.UserID";
+GROUP BY u.FirstName + ' ' + u.LastName, u.Phone, u.UserID, u.Dob,a.Email,a.Status";
             var result = await con.QueryAsync<GetCustomerResponseDTO>(sqlQuery);
             return result;
         }
