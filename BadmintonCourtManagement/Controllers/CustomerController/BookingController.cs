@@ -37,7 +37,7 @@ namespace BadmintonCourtManagement.Controllers.CustomerController
             }
         }
 
-        [Authorize(Roles = "Member")]
+        [Authorize(Roles = "Member, Staff, Owner")]
         [HttpPost("booking-detail")]
         public async Task<IActionResult> GetBookingsDetail(BookingDetailRequestDTO dto)
         {
