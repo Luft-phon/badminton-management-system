@@ -83,5 +83,24 @@ namespace BadmintonCourtManagement.Controllers
             return Ok("Token is valid");
         }
 
+        [Authorize(Roles = "Staff, Owner")]
+        [HttpPut("delete-user")]
+        public async Task<IActionResult> DeleteAccount([FromBody] int userID)
+        {
+            try
+            {
+                var result = await _userService.DeleteAccount(userID);
+                if (result is null)
+                {
+                    return BadRequest(ErrorResponse.NotFound());
+                }
+                return Ok(ApiResponse<string>.Success(result));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ErrorResponse.InternalError(400, ex.Message));
+            }
+        }
+
     }
 }

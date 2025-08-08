@@ -21,5 +21,9 @@ namespace BadmintonCourtManagement.Application.Service
         {
             return _useCase.RefreshToken(dto);
         }
+        public Task<string> DeleteAccount(int userID)
+        {
+            return _useCase.DeleteAccount(userID);
+        }
     }
 }
