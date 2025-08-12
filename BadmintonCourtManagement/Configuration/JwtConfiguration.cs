@@ -16,7 +16,7 @@ namespace BadmintonCourtManagement.Configuration
                 ValidateAudience = true,
                 ValidAudience = configuration["AppSettings:Audience"],
                 ValidateLifetime = true,
-                //ClockSkew = TimeSpan.Zero,
+                ClockSkew = TimeSpan.Zero,
                 IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(configuration["AppSettings:Token"]!)),
                 ValidateIssuerSigningKey = true
             };

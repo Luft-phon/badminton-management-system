@@ -50,8 +50,8 @@ namespace BadmintonCourtManagement.Application.UseCase
         public async Task<TokenResponseDTO> RefreshToken(TokenRefreshRequestDTO dto)
         {
             // Validate the existing refresh token
-            var account = await _context.Account.FirstOrDefaultAsync(u => u.UserID == dto.UserID);
-            var token = await _context.Tokens.FirstOrDefaultAsync(t => t.UserID == dto.UserID && t.RefreshToken == dto.RefreshToken && t.ExpiresAt >= DateTime.UtcNow);
+            var account = await _context.Account.FirstOrDefaultAsync(u => u.Email == dto.email);
+            var token = await _context.Tokens.FirstOrDefaultAsync(t => t.UserID == account.UserID && t.RefreshToken == dto.RefreshToken && t.ExpiresAt >= DateTime.UtcNow);
             if (account == null || token is null)
             {
                 return null;

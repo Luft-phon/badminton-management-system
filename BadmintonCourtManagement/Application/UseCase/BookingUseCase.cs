@@ -144,7 +144,7 @@ namespace BadmintonCourtManagement.Application.UseCase
             {
                 string result;
                 var bookings = await _context.Bookings
-                    .Where(b => b.StartTime > DateTime.UtcNow)
+                    .Where(b => b.Status.Equals(Domain.Enum.BookingStatus.Booked) && b.StartTime > DateTime.Now)
                     .FirstOrDefaultAsync(b => b.BookingID == bookingID);
                     
                 if (bookings == null) {
@@ -155,7 +155,7 @@ namespace BadmintonCourtManagement.Application.UseCase
                 await _context.SaveChangesAsync();
                  result = bookings.Status.ToString();
                 await _unitOfWork.CommitAsync();
-                return result;
+                return result = "Cancel Successfully";
             }
             catch (Exception ex) { 
                 await _unitOfWork.RollbackAsync();
