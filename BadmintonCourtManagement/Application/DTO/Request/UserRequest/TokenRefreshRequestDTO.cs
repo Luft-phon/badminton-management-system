@@ -2,7 +2,7 @@
 {
     public class TokenRefreshRequestDTO
     {
-        public int UserID { get; set; }
+        public string email { get; set; }
         public string RefreshToken { get; set; }
     }
 }
