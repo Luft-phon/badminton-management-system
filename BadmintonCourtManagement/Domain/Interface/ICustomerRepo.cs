@@ -10,6 +10,6 @@ namespace BadmintonCourtManagement.Domain.Interface
         Task<IEnumerable<GetCustomerResponseDTO>> GetAllCustomers();
         Task<GetCustomerByIdDTO> GetCustomerById(int id);
         Task<IEnumerable<BookingHistoryResponseDTO>> GetCustomerBookingHistory(int id);
-        Task<GetUserDetailResponseDTO> GetUserDetail(UserDetailRequestDTO dto);
+        Task<GetUserDetailResponseDTO> GetUserDetail(string email);
     }
 }

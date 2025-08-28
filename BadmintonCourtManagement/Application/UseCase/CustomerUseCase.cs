@@ -159,11 +159,11 @@ namespace BadmintonCourtManagement.Application.UseCase
             }
         }
 
-        public async Task<GetUserDetailResponseDTO> GetUserDetail(UserDetailRequestDTO dto)
+        public async Task<GetUserDetailResponseDTO> GetUserDetail(string email)
         {
             try
             {
-                var user = await _customerRepo.GetUserDetail(dto);
+                var user = await _customerRepo.GetUserDetail(email);
 
                 if (user == null)
                 {

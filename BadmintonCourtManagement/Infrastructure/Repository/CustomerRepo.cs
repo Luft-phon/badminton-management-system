@@ -119,7 +119,7 @@ GROUP BY b.BookingDate, b.StartTime, b.EndTime, c.CourtName, b.BookingID";
             return result;
         }
 
-        public async Task<GetUserDetailResponseDTO> GetUserDetail(UserDetailRequestDTO dto)
+        public async Task<GetUserDetailResponseDTO> GetUserDetail(string email)
         {
             using var con = new SqlConnection(_connectionString);
             string sqlQuery = @"SELECT u.UserID, u.FirstName, u.LastName, CONVERT(VARCHAR(10), u.Dob, 101) as Dob, c.Email, u.Phone, p.Point, c.CreateAt
@@ -128,7 +128,7 @@ LEFT JOIN Account c ON u.UserID = c.UserID
 LEFT JOIN Points p ON p.UserID = u.UserID
 WHERE c.Email = @Email";
 
-            var result = await con.QueryFirstOrDefaultAsync<GetUserDetailResponseDTO>(sqlQuery, new { Email = dto.email });
+            var result = await con.QueryFirstOrDefaultAsync<GetUserDetailResponseDTO>(sqlQuery, new { Email = email });
             return result;
         }
     }

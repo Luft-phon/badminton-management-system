@@ -25,9 +25,9 @@ namespace BadmintonCourtManagement.Application.Service
             return useCase.GetCustomerById(id);
         }
 
-        public Task<GetUserDetailResponseDTO> GetUserDetail(UserDetailRequestDTO dto)
+        public Task<GetUserDetailResponseDTO> GetUserDetail(string email)
         {
-            return useCase.GetUserDetail(dto);
+            return useCase.GetUserDetail(email);
         }
 
         public Task<string> RegisterCustomer(VerificationCodeRequestDTO dto)
