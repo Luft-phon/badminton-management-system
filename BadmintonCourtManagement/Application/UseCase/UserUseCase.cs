@@ -42,7 +42,8 @@ namespace BadmintonCourtManagement.Application.UseCase
             var response = new TokenResponseDTO
             {
                 AccessToken = tokenValidation.CreateToken(account, user),
-                RefreshToken = await _tokenRepo.SaveRefreshToken(user)
+                RefreshToken = await _tokenRepo.SaveRefreshToken(user),
+                Role = user.Role.ToString()
             };
             return response;
         }

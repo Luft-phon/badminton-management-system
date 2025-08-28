@@ -10,7 +10,7 @@ namespace BadmintonCourtManagement.Application.Interface
     {
         Task<IEnumerable<GetCustomerResponseDTO>> GetAllCustomers();
         Task<GetCustomerByIdDTO> GetCustomerById(int id);
-        Task<GetUserDetailResponseDTO> GetUserDetail(UserDetailRequestDTO dto);
+        Task<GetUserDetailResponseDTO> GetUserDetail(string email);
         Task<string> RegisterCustomer(VerificationCodeRequestDTO dto);
         Task<UpdateCustomerRequestDTO> UpdateCustomerById(UpdateCustomerRequestDTO dto);
 

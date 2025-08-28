@@ -87,12 +87,12 @@ namespace BadmintonCourtManagement.Controllers.CustomerController
         }
 
         [Authorize(Roles = "Staff, Member, Owner")]
-        [HttpPost("user-detail")]
-        public async Task<IActionResult> GetUserDetail(UserDetailRequestDTO dto)
+        [HttpGet("user-detail/{email}")]
+        public async Task<IActionResult> GetUserDetail([FromRoute] string email)
         {
             try
             {
-                var userDetail = await _customerService.GetUserDetail(dto); 
+                var userDetail = await _customerService.GetUserDetail(email); 
                 return Ok(ApiResponse<GetUserDetailResponseDTO>.Success(userDetail));
             }
             catch (Exception ex) {
